@@ -7,6 +7,7 @@
 - Mohammadjavad Ghandibaghbanzadeh
  
 ## The goal of the project
+Clean and analyze data, learn how to collaborate in data analytics and github.
 
 ## Explain how to set up the environment / install dependencies
 
