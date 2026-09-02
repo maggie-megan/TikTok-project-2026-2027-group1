@@ -13,3 +13,4 @@ Clean and analyze data, learn how to collaborate in data analytics and github.
 
 ## Explain how to reproduce the analysis (which scripts to run, in which order)
 
+## Figuring out the git
