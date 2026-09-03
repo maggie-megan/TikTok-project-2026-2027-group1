@@ -1,0 +1,30 @@
+---
+title: "TikTok Project Group 1"
+authors: Maggie Megan, Maja Gresik, Merel van Buren, Mohammadjavad Ghandibaghbanzadeh
+format: html
+---
+
+# TikTok Video Views Analysis
+Within this project, we are aiming to analyse a set of data collected from TikTok (video_views.csv). 
+
+# Loading the Data for Analysis
+```{r}
+# Load the required package
+library(tidyverse)
+
+# Load the data file 
+video_views <- read_csv("../data/raw/video_view.csv")
+View(video_views) # take an initial look at the data
+```
+
+# Initial Summary of the Data
+```{r}
+# Number of rows and coloumns
+dim(video_views)
+
+# Variable names
+names(video_views) 
+
+# Summary of the variables
+summary(video_views) 
+```
