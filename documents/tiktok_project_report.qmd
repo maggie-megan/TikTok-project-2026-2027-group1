@@ -14,7 +14,6 @@ library(tidyverse)
 
 # Load the data file 
 video_views <- read_csv("../data/raw/video_view.csv")
-View(video_views) # take an initial look at the data
 ```
 
 # Initial Summary of the Data
