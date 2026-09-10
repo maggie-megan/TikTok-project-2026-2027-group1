@@ -14,15 +14,26 @@ if (!dir.exists("src/tiktok_analysis/gen/output")) {
   dir.create("src/tiktok_analysis/gen/output", recursive = TRUE)
 }
 
-# 4. Create visualization
+# 4. Create visualization with dark green theme
 p <- ggplot(df_clean, aes(x = baseline_login)) +
-  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  geom_histogram(
+    bins = 30, 
+    fill = "#E86F88",       # Changed to dark green
+    color = "white",          # Crisp white bar borders
+    alpha = 0.85              # Soft visual finish
+  ) +
   labs(
     title = "Distribution of Baseline Logins",
-    x = "Baseline Login Trait",
-    y = "User Count"
+    subtitle = "Analysis of user activity frequency from TikTok research data",
+    x = "Baseline Login Score",
+    y = "Number of Users"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "dimgrey"),
+    axis.title = element_text(face = "bold")
+  )
 
 # 5. Save output plot
 ggsave("src/tiktok_analysis/gen/output/logins_distribution.png", plot = p, width = 7, height = 5)
