@@ -35,6 +35,9 @@ clean_impressions$mission_ids <- as.factor(clean_impressions$mission_ids)
 # Check structure
 str(clean_impressions)
 
+# Save clean_impressions
+write_csv(clean_impressions, here("data", "output", "clean_impressions.csv"))
+
 ## Part 3: Analysing and Plotting the data
 
 # Plot 1: How does impression volume change throughout a day?
