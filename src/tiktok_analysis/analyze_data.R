@@ -111,3 +111,47 @@ p_scatter <- ggplot(df_clean, aes(x = baseline_login, y = base_videos_watched_me
   )
 
 ggsave("src/tiktok_analysis/gen/output/logins_vs_videos.png", plot = p_scatter, width = 7, height = 4.5, dpi = 300)
+
+# Create plot 4: Density distribution of interaction needs (how strongly users need social engagement, feedback or interactive features)
+
+p_density <- ggplot(df_clean, aes(x = need_interaction)) +
+  geom_density(fill = "#FFFDD0", color = "#E6C229", alpha = 0.8, linewidth = 1) +
+  labs(
+    title = "Distribution of User Interaction Needs",
+    subtitle = "Density estimation of user desire for social and interactive platform features",
+    x = "Interaction Need Score",
+    y = "Density"
+  ) +
+  theme_classic(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#2C3E50"),
+    plot.subtitle = element_text(color = "#7F8C8D", size = 10, margin = margin(b = 10)),
+    axis.title = element_text(face = "bold", color = "#34495E")
+  )
+
+ggsave("src/tiktok_analysis/gen/output/interaction_density.png", plot = p_density, width = 7, height = 4.5, dpi = 300)
+
+# --> just as many users who strongly dislike interactive features (-1.0) as you do users who feel completely neutral (0.0), and users who heavily rely on social features (+1.0)
+
+# Create plot 5: Saturation Decay and Videos Watched (Testing whether content fatigue impacts total watch time)
+
+p_decay <- ggplot(df_clean, aes(x = satiation_decay, y = base_videos_watched_mean)) +
+  geom_point(alpha = 0.4, color = "#C3B1E1", size = 2) +
+  geom_smooth(method = "lm", se = TRUE, color = "#967BB6", fill = "#E6E6FA") +
+  labs(
+    title = "Content Satiation Decay vs. Total Videos Watched",
+    subtitle = "Evaluating how user fatigue impacts overall video consumption volume",
+    x = "Satiation Decay Rate",
+    y = "Mean Videos Watched"
+  ) +
+  theme_classic(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#2C3E50"),
+    plot.subtitle = element_text(color = "#7F8C8D", size = 10, margin = margin(b = 10)),
+    axis.title = element_text(face = "bold", color = "#34495E")
+  )
+
+ggsave("src/tiktok_analysis/gen/output/satiation_vs_videos.png", plot = p_decay, width = 7, height = 4.5, dpi = 300)
+
+colnames(df_clean)
+# --> A user's satiation decay rate (how fast they tire of content, between 0.75 and 0.96) has zero effect on their average video watch count
