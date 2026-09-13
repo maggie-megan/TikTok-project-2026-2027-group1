@@ -101,7 +101,7 @@ plot_2 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "impression_volume_hourly.png"),
+  filename = here("fig_outputs", "recommendation_method_total_score.png"),
   plot = plot_2,
   width = 8, height = 5, units = "in", dpi = 300
 )
@@ -116,7 +116,7 @@ mean_penalty_rank <- clean_impressions %>%
 ## Plotting feed rank against mean satiation penalty
 plot_3 <- ggplot(mean_penalty_rank, aes(x = feed_rank,  y = mean_penalty)) +
   geom_point(colour = "orange", size = 2) +
-  geom_smooth(method = "gam", colour = "gold", se = FALSE, size = 1) +
+  geom_smooth(method = "gam", colour = "gold", se = FALSE, linewidth = 1) +
   labs(
     title = "Feed Position Impact on User Satiation",
     x = "Feed Position (Rank)",
@@ -130,7 +130,7 @@ plot_3 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "impression_volume_hourly.png"),
+  filename = here("fig_outputs", "top_creator_total_score.png"),
   plot = plot_3,
   width = 8, height = 5, units = "in", dpi = 300
 )
@@ -161,7 +161,7 @@ plot_4 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "impression_volume_hourly.png"),
+  filename = here("fig_outputs", "user_saitiation.png"),
   plot = plot_4,
   width = 8, height = 5, units = "in", dpi = 300
 )

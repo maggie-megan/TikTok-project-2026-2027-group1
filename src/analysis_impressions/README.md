@@ -50,10 +50,6 @@ The code should be run in the following order:
 2. **Makefile** - In the terminal run: make. This will run the file of "impressions_analysis.R". When this file is run successfully the files "impressions_volume_hourly.png", "recommendation_method_total_score.png", "top_creator_total_score.png", and "user_saitiation.png" will be created in fig_outputs/. (If errors occur check that you are in the right working directory)
 3. **Optional:** impressions_analysis.R - If you want to make changes to the data or plots produced, edits can be made within this file. However, if changes are made make sure that the makefile is also updated. 
 
-## Cleaning Outputs 
-To remove all generated figures, in the terminal run:
-make clean
-
 ## Troubleshooting
 - If you get errors about missing folders or data, confirm you are in the correct working directory and that your project structure matches the diagram above.
 - If package errors occur, install them as described in the dependencies section.
