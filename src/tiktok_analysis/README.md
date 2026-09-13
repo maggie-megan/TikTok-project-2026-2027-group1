@@ -14,6 +14,7 @@ This subproject inspects the user TikTok behavioral data. It handles raw data in
 ## Project output:
 Histogram visualization of user baseline login frequencies: gen/output/logins_distribution.png
 
+
 ## How to run the analysis
 Navigate to this directory in your terminal and run the Makefile:
 ```bash
