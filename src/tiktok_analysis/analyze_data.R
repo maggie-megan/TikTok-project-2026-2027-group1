@@ -14,27 +14,80 @@ if (!dir.exists("src/tiktok_analysis/gen/output")) {
   dir.create("src/tiktok_analysis/gen/output", recursive = TRUE)
 }
 
-# 4. Create visualization with dark green theme
+
+# 4. Create visualization with dark green theme - baseline logins
 p <- ggplot(df_clean, aes(x = baseline_login)) +
   geom_histogram(
-    bins = 30, 
-    fill = "#E86F88",       # Changed to dark green
-    color = "white",          # Crisp white bar borders
-    alpha = 0.85              # Soft visual finish
+    bins = 25, 
+    fill = "#E88D8D",       # Changed to dark green
+    color = "#FFFFFF",          # Soft white bar borders
+    alpha = 0.4              
   ) +
   labs(
     title = "Distribution of Baseline Logins",
-    subtitle = "Analysis of user activity frequency from TikTok research data",
+    subtitle = "User engagement frequency across TikTok research participants",
     x = "Baseline Login Score",
-    y = "Number of Users"
+    y = "User Count"
   ) +
-  theme_minimal() +
+  theme_classic(base_size = 11) +
   theme(
-    plot.title = element_text(face = "bold", size = 14),
-    plot.subtitle = element_text(color = "dimgrey"),
-    axis.title = element_text(face = "bold")
+    plot.title = element_text(face = "bold", size = 14, color = "#2C3E50"),
+    plot.subtitle = element_text(color = "#7F8C8D", size = 10, margin = margin(b = 10)),
+    axis.title = element_text(face = "bold", color = "#34495E"),
+    axis.line = element_line(color = "#BDC3C7"),
+    axis.ticks = element_line(color = "#BDC3C7")
   )
 
 # 5. Save output plot
-ggsave("src/tiktok_analysis/gen/output/logins_distribution.png", plot = p, width = 7, height = 5)
+ggsave("src/tiktok_analysis/gen/output/logins_distribution.png", plot = p, width = 7, height = 4.5, dpi = 300)
 
+# Create plot 2: Content preferences comparison
+
+library(tidyverse)
+
+pref_summary <- df_clean %>%
+  summarise(
+    Comedy = mean(pref_Comedy, na.rm = TRUE),
+    Gaming = mean(pref_Gaming, na.rm = TRUE),
+    Pets = mean(pref_Pets, na.rm = TRUE),
+    Food = mean(pref_Food, na.rm = TRUE),
+    Beauty = mean(pref_BeautyFashion, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "Category", values_to = "Avg_Preference")
+
+p_pref <- ggplot(pref_summary, aes(x = reorder(Category, Avg_Preference), y = Avg_Preference)) +
+  geom_col(fill = "#E88D8D", width = 0.6) +
+  coord_flip() +
+  labs(
+    title = "Average User Interest by Content Category",
+    subtitle = "Mean preference scores across primary TikTok video genres",
+    x = "Content Category",
+    y = "Average Preference Score"
+  ) +
+  theme_classic(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#2C3E50"),
+    plot.subtitle = element_text(color = "#7F8C8D", size = 10, margin = margin(b = 10)),
+    axis.title = element_text(face = "bold", color = "#34495E")
+  )
+
+ggsave("src/tiktok_analysis/gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
+
+# Experiment with plot 2
+p_pref <- ggplot(pref_summary, aes(x = reorder(Category, Avg_Preference), y = Avg_Preference)) +
+  geom_col(fill = "#87A96B", width = 0.6) +
+  coord_flip() +
+  labs(
+    title = "Average User Interest by Content Category",
+    subtitle = "Mean preference scores across primary TikTok video genres",
+    x = "Content Category",
+    y = "Average Preference Score"
+  ) +
+  theme_classic(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, color = "#2C3E50"),
+    plot.subtitle = element_text(color = "#7F8C8D", size = 10, margin = margin(b = 10)),
+    axis.title = element_text(face = "bold", color = "#34495E")
+  )
+
+ggsave("src/tiktok_analysis/gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
