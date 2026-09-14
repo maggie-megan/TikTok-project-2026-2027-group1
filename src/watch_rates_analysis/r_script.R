@@ -109,7 +109,7 @@ best_creator_plot <- ggplot(top_25_creators, aes(
   labs(title = "Top 25 Creators by Average Watch Seconds",
     x = "Average Watch Seconds",
     y = "Creator ID")
-print(best_creator)
+print(best_creator_plot)
 
 # Congrats to creator number 39!
 
