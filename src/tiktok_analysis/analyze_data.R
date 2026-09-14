@@ -2,7 +2,7 @@
 library(tidyverse)
 
 # 1. Read dataset
-df <- read_csv("src/tiktok_analysis/data/users.csv")
+df <- read_csv("data/users.csv")
 
 # 2. Basic cleaning
 df_clean <- df %>%
@@ -16,7 +16,7 @@ if (!dir.exists("src/tiktok_analysis/gen/output")) {
 
 
 # 4. Create visualization with dark green theme - baseline logins
-p <- ggplot(df_clean, aes(x = baseline_login)) +
+p_logins <- ggplot(df_clean, aes(x = baseline_login)) +
   geom_histogram(
     bins = 25, 
     fill = "#E88D8D",       # Changed to dark green
@@ -39,7 +39,7 @@ p <- ggplot(df_clean, aes(x = baseline_login)) +
   )
 
 # 5. Save output plot
-ggsave("src/tiktok_analysis/gen/output/logins_distribution.png", plot = p, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/logins_distribution.png", plot = p_logins, width = 7, height = 4.5, dpi = 300)
 
 # Create plot 2: Content preferences comparison (explore user preferences)
 
@@ -71,7 +71,7 @@ p_pref <- ggplot(pref_summary, aes(x = reorder(Category, Avg_Preference), y = Av
     axis.title = element_text(face = "bold", color = "#34495E")
   )
 
-ggsave("src/tiktok_analysis/gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
 
 # Experiment with plot 2
 p_pref <- ggplot(pref_summary, aes(x = reorder(Category, Avg_Preference), y = Avg_Preference)) +
@@ -90,7 +90,7 @@ p_pref <- ggplot(pref_summary, aes(x = reorder(Category, Avg_Preference), y = Av
     axis.title = element_text(face = "bold", color = "#34495E")
   )
 
-ggsave("src/tiktok_analysis/gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/content_preferences.png", plot = p_pref, width = 7, height = 4.5, dpi = 300)
 
 # Create plot 3: Scatter plot - Baseline Logins and Videos Watched (are the people who log in also watching more videos?)
 
@@ -110,7 +110,7 @@ p_scatter <- ggplot(df_clean, aes(x = baseline_login, y = base_videos_watched_me
     axis.title = element_text(face = "bold", color = "#34495E")
   )
 
-ggsave("src/tiktok_analysis/gen/output/logins_vs_videos.png", plot = p_scatter, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/logins_vs_videos.png", plot = p_scatter, width = 7, height = 4.5, dpi = 300)
 
 # Create plot 4: Density distribution of interaction needs (how strongly users need social engagement, feedback or interactive features)
 
@@ -129,7 +129,7 @@ p_density <- ggplot(df_clean, aes(x = need_interaction)) +
     axis.title = element_text(face = "bold", color = "#34495E")
   )
 
-ggsave("src/tiktok_analysis/gen/output/interaction_density.png", plot = p_density, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/interaction_density.png", plot = p_density, width = 7, height = 4.5, dpi = 300)
 
 # --> just as many users who strongly dislike interactive features (-1.0) as you do users who feel completely neutral (0.0), and users who heavily rely on social features (+1.0)
 
@@ -151,7 +151,7 @@ p_decay <- ggplot(df_clean, aes(x = satiation_decay, y = base_videos_watched_mea
     axis.title = element_text(face = "bold", color = "#34495E")
   )
 
-ggsave("src/tiktok_analysis/gen/output/satiation_vs_videos.png", plot = p_decay, width = 7, height = 4.5, dpi = 300)
+ggsave("gen/output/satiation_vs_videos.png", plot = p_decay, width = 7, height = 4.5, dpi = 300)
 
 colnames(df_clean)
 # --> A user's satiation decay rate (how fast they tire of content, between 0.75 and 0.96) has zero effect on their average video watch count
