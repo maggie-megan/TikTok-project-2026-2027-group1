@@ -130,7 +130,7 @@ plot_3 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "top_creator_total_score.png"),
+  filename = here("fig_outputs", "user_saitiation.png"),
   plot = plot_3,
   width = 8, height = 5, units = "in", dpi = 300
 )
@@ -161,7 +161,7 @@ plot_4 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "user_saitiation.png"),
+  filename = here("fig_outputs", "top_creator_total_score.png"),
   plot = plot_4,
   width = 8, height = 5, units = "in", dpi = 300
 )
