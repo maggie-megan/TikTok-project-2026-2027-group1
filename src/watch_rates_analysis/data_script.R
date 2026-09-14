@@ -1,6 +1,6 @@
 # Download the raw data
 
-file_path <- "TikTok-project-2026-2027-group1/src/watch_rates_analysis/data/watch_events.csv"
+file_path <- "src/watch_rates_analysis/data/watch_events.csv"
 data_url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/watch_events.csv"
 
 

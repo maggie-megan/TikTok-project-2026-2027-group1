@@ -2,7 +2,7 @@
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
-watch_events <- read.csv("tiktok-project-2026-2027-group1/src/watch_rates_analysis/data/watch_events.csv")
+watch_events <- read.csv("src/watch_rates_analysis/data/watch_events.csv")
 
 # Remove impression_id, as it's the same as watch_event_id
 clean_watch_events <- watch_events %>% select(-impression_id)
@@ -36,11 +36,11 @@ print(action_plot)
 #This shows the amount of times someone exited TikTok, skipped a video immediately 
 # or after watching it partially, or watched the entire video
 
-# Save the bar chart
-dir.create("TikTok-project-2026-2027-group1/src/watch_rates_analysis/output", recursive = TRUE, showWarnings = FALSE)
+# Create a new folder and save the bar chart
+dir.create("src/watch_rates_analysis/output", recursive = TRUE, showWarnings = FALSE)
 
 ggsave(
-  filename = "TikTok-project-2026-2027-group1/src/watch_rates_analysis/output/action_plot.png",
+  filename = "src/watch_rates_analysis/output/action_plot.png",
   plot = action_plot,
   width = 8,
   height = 5,
@@ -57,11 +57,11 @@ watch_seconds_plot <- ggplot(clean_watch_events, aes(x = watch_seconds)) +
   )
 print(watch_seconds_plot)
 
-# The number seems to be correct, so we can see that most people skip almost immediately, 
+# We can see that most people skip almost immediately 
 # and the watch seconds seem to diminish gradually.
 
 # Let's save this plot as well
-ggsave("TikTok-project-2026-2027-group1/src/watch_rates_analysis/output/watch_seconds_plot.png",
+ggsave("src/watch_rates_analysis/output/watch_seconds_plot.png",
 plot = watch_seconds_plot,
 width = 8,
 height = 5,
@@ -85,7 +85,7 @@ print(watch_seconds_per_action)
 
 # We can now see the watch seconds per action taken (minus skipping immediately)
 # Let's save this chart as well
-ggsave(filename = "TikTok-project-2026-2027-group1/src/watch_rates_analysis/output/watch_seconds_per_action_plot.png",
+ggsave(filename = "src/watch_rates_analysis/output/watch_seconds_per_action_plot.png",
 plot = watch_seconds_per_action,
 width = 8,
 height = 5,
@@ -114,8 +114,9 @@ print(best_creator)
 # Congrats to creator number 39!
 
 #Let's save this chart as well
-ggsave("TikTok-project-2026-2027-group1/src/watch_rates_analysis/output/best_creator_plot.png",
+ggsave("src/watch_rates_analysis/output/best_creator_plot.png",
 plot = best_creator_plot,
 width = 10,
 height = 6,
 dpi = 300)
+
