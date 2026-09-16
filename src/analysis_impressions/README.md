@@ -48,7 +48,7 @@ Before running the code make sure that you are in the correct working directory 
 The code should be run in the following order:
 1. **raw_data_impressions.R** - This file will download the file "impressions.csv" into data/raw. (If the file does not download check whether the file has already been downloaded and if you are in the right working directory.)
 2. **Makefile** - In the terminal run: make. This will run the file of "impressions_analysis.R". When this file is run successfully the files "impressions_volume_hourly.png", "recommendation_method_total_score.png", "top_creator_total_score.png", and "user_saitiation.png" will be created in fig_outputs/.
---> If errors occurs check that you are in the right working directory and if you have installed all of the necessary packages
+ - If errors occur check that you are in the right working directory and if you have installed all of the necessary packages
 3. **Optional:** impressions_analysis.R - If you want to make changes to the data or plots produced, edits can be made within this file. However, if changes are made make sure that the makefile is also updated. 
 
 ## Troubleshooting
