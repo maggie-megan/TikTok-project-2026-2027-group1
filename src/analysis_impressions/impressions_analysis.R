@@ -11,7 +11,7 @@ library(lubridate)
 raw_impressions <- read_csv(here("data", "raw", "impressions.csv"))
 
 # Initial look at the data: 
-view(raw_impressions)
+# view(raw_impressions)
 
 dim(raw_impressions) #Number of rows and coloums
 names(raw_impressions) #Names of variables
