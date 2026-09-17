@@ -67,7 +67,7 @@ plot_1 <- ggplot(hour_impressions, aes(x = hour, y = impression_count)) +
     axis.title = element_text(size = 13)
   ) + 
   expand_limits(y = 0)
-plot_1 #view plot
+# plot_1 #view plot
 
 ## Save the plot as .png
 ggsave(
@@ -98,7 +98,7 @@ plot_2 <- ggplot(box_data, aes(x = source_bucket, y = score_total)) +
   theme(
     plot.title = element_text(size = 16, face = "bold"),
     axis.title = element_text(size = 13))
-plot_2 #view plot
+# plot_2 #view plot
 
 ## Save the plot as .png
 ggsave(
@@ -127,7 +127,7 @@ plot_3 <- ggplot(mean_penalty_rank, aes(x = feed_rank,  y = mean_penalty)) +
   theme(
     plot.title = element_text(size = 16, face = "bold"),
     axis.title = element_text(size = 13)) 
-plot_3 #view plot
+# plot_3 #view plot
 
 ## Save the plot as .png
 ggsave(
@@ -158,7 +158,7 @@ plot_4 <- ggplot(top_creators, aes(x = reorder(creator_id, avg_score_total), y =
   theme(
     plot.title = element_text(size = 16, face = "bold"),
     axis.title = element_text(size = 13)) 
-plot_4 #view plot
+# plot_4 #view plot
 
 ## Save the plot as .png
 ggsave(
