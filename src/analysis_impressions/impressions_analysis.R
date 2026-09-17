@@ -5,11 +5,12 @@
 # Load packages
 library(tidyverse)
 library(here)
+library(lubridate)
 
 # Load in Raw Data file
 raw_impressions <- read_csv(here("data", "raw", "impressions.csv"))
 
-# Initial look at the data
+# Initial look at the data: 
 view(raw_impressions)
 
 dim(raw_impressions) #Number of rows and coloums
@@ -26,7 +27,7 @@ colSums(is.na(clean_impressions))
 
 # Check for and remove any duplicate rows
 sum(duplicated(clean_impressions))
-clean_impressions <- clean_impressions[!duplicated(clean_impressions), ]
+clean_impressions <- clean_impressions %>% distinct()
 
 # Convert categorical variables to factors
 clean_impressions$source_bucket <- as.factor(clean_impressions$source_bucket)
@@ -130,7 +131,7 @@ plot_3 #view plot
 
 ## Save the plot as .png
 ggsave(
-  filename = here("fig_outputs", "user_saitiation.png"),
+  filename = here("fig_outputs", "user_satiation.png"),
   plot = plot_3,
   width = 8, height = 5, units = "in", dpi = 300
 )
