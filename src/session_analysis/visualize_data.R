@@ -1,7 +1,9 @@
-# Do basic cleaning of the data  
-
+# Loading all the packages
 library(readr)
+library(tidyverse)
+library(lubridate)
 
+# Basic cleaning of the data  
 sessions <- read_csv("data/sessions.csv")
 
 head(sessions)
@@ -15,11 +17,13 @@ sum(duplicated(sessions))
 # Check Session Duration
 sum(sessions$session_duration_sec < 0, na.rm = TRUE)
 
+# Since there are no missing values, duplicated rows or negative session durations, we will proceed with the figures.
 
-library(tidyverse)
-library(lubridate)
 
-# session_duration_histogram
+
+# Plot 1: Distribution of session duration
+
+# A histogram showing how long user sessions last.
 
 p1<- ggplot(data= sessions, aes(x=session_duration_sec)) +
 geom_histogram(
@@ -27,15 +31,16 @@ geom_histogram(
     fill = "blue",
      color = "white") +
   labs(
-    title = "distribution of session duration",
-    x = "sesseion duration " ,
-    y = "count"
+    title = "Distribution of session duration",
+    x = "session duration in seconds" ,
+    y = "Number of sessions"
   )
+print(p1)
 
 
+# Plot 2: Videos viewed vs session duration
 
-
-# videos_viewed _vs_session_duration  
+# A scatterplot showing the relationship between videos viewed and the duration of the session
 
 p2<- ggplot(data= sessions, aes(x=videos_viewed , y=session_duration_sec)) +
 geom_point(
@@ -43,14 +48,16 @@ geom_point(
      alpha = 0.3
     ) +
   labs(
-    title = "video vs session",
-    x = "videos_viewed" ,
-    y = "session_duration"
+    title = "Relationship between videos viewed and session duration",
+    x = "Number of videos viewed" ,
+    y = "Session duration, in seconds"
   )
+print(p2)
 
+# Plot 3: Number of sessions by login hour
+# A bar chart showing at what hour users log in
 
-# sessions_by_login_hour
-
+# We make an extra column, showing the hour users log in
 sessions <- sessions %>%
   mutate(login_hour = hour(login_at))
 
@@ -63,15 +70,16 @@ p3<- ggplot(data = sessions, aes(x = login_hour)) +
     alpha = 0.8
   ) +
   labs(
-    title = "Number of Sessions by Login Hour",
-    x = "Login Hour",
-    y = "Number of Sessions"
+    title = "Number of sessions by login hour",
+    x = "Login hour, using a 24 hour clock",
+    y = "Number of sessions"
   ) +
   scale_x_continuous(
     breaks = 0:23
   )
+print(p3)
 
-# save photos
+# Saving the plots
 
 ggsave(
   "fig_outputs/session_duration.png",
