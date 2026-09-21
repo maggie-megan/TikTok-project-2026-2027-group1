@@ -1,7 +1,5 @@
-# Get the necessary packages and basic programming
+# Get the necessary packages and load the data in
 library(tidyverse)
-library(dplyr)
-library(ggplot2)
 raw_watch_events <- read.csv("../../data/raw/watch_events.csv")
 
 # Remove impression_id, as it's the same as watch_event_id
@@ -19,20 +17,43 @@ write.csv(clean_watch_events, "../../data/output/clean_watch_events.csv", row.na
 #We are ready to analyze!
 
 # First plot: a histogram of all the amount of different actions
-action_plot <- ggplot(clean_watch_events, aes(x = factor(
-  action,
-  levels = c("exit_platform", "skip_immediate", "skip_after_partial", "watch_full")
-))) +
+action_plot <- ggplot(
+  clean_watch_events,
+  aes(
+    x = factor(
+      action,
+      levels = c(
+        "exit_platform",
+        "skip_immediate",
+        "skip_after_partial",
+        "watch_full"
+      )
+    )
+  )
+) +
   geom_bar(fill = "skyblue") +
   geom_text(
     stat = "count",
     aes(label = after_stat(count)),
     vjust = -0.3
   ) +
+  scale_x_discrete(
+    labels = c(
+      "exit_platform" = "Exit Platform",
+      "skip_immediate" = "Skip Immediately",
+      "skip_after_partial" = "Skip After Partial Watch",
+      "watch_full" = "Watch Full Video"
+    )
+  ) +
   labs(
     title = "Number of Watch Events by Action",
     x = "Action",
-    y = "Number of events"
+    y = "Number of Events"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
   )
 print(action_plot)
 
@@ -55,6 +76,11 @@ watch_seconds_plot <- ggplot(clean_watch_events, aes(x = watch_seconds)) +
     title = "Distribution of Watch Time",
     x = "Watch seconds",
     y = "Number of watch events"
+  ) +  
+    theme(
+    plot.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
   )
 print(watch_seconds_plot)
 
@@ -73,15 +99,35 @@ dpi = 300)
 watch_seconds_per_action <- clean_watch_events %>%
   filter(action != "skip_immediate") %>%
   ggplot(aes(
-    x = factor(action, levels = c("exit_platform", "skip_after_partial", "watch_full")),
+    x = factor(
+      action,
+      levels = c(
+        "exit_platform",
+        "skip_after_partial",
+        "watch_full"
+      )
+    ),
     y = watch_seconds
   )) +
   geom_boxplot(fill = "skyblue") +
+  scale_x_discrete(
+    labels = c(
+      "exit_platform" = "Exit Platform",
+      "skip_after_partial" = "Skip After Partial Watch",
+      "watch_full" = "Watch Full Video"
+    )
+  ) +
   labs(
     title = "Watch Time per Viewer Action",
     x = "Actions",
     y = "Watch Seconds"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
   )
+
 print(watch_seconds_per_action)
 
 # We can now see the watch seconds per action taken (minus skipping immediately)
@@ -99,17 +145,34 @@ creator_average_watch <- clean_watch_events %>%
     number_of_events = n()) %>%
   arrange(desc(average_watch_seconds))
 
-# Keep only top 25 creators
-top_25_creators <- creator_average_watch %>% slice_head(n = 25)
+# Keep only top 10 creators
+top_10_creators <- creator_average_watch %>% slice_head(n = 10)
 
-# Plot top 25 creators ordered by average watch seconds
-best_creator_plot <- ggplot(top_25_creators, aes(
-  x = average_watch_seconds,
-  y = reorder(as.factor(creator_id), average_watch_seconds))) + 
+# Plot top 10 creators ordered by average watch seconds
+best_creator_plot <- ggplot(
+  top_10_creators,
+  aes(
+    x = average_watch_seconds,
+    y = reorder(as.factor(creator_id), average_watch_seconds)
+  )
+) +
   geom_col(fill = "skyblue") +
-  labs(title = "Top 25 Creators by Average Watch Seconds",
+  geom_text(
+    aes(label = sprintf("%.2f", average_watch_seconds)),
+    hjust = 1.15,
+    size = 3
+  ) +
+  labs(
+    title = "Top 10 Creators by Average Watch Seconds",
     x = "Average Watch Seconds",
-    y = "Creator ID")
+    y = "Creator ID"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
+  )
+
 print(best_creator_plot)
 
 # Congrats to creator number 39!
@@ -120,3 +183,5 @@ plot = best_creator_plot,
 width = 10,
 height = 6,
 dpi = 300)
+
+## End of Script
