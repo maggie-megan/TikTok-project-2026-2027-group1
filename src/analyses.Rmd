@@ -1,0 +1,258 @@
+---
+title: 'TikTok Analyses '
+authors: Group 1
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Introduction
+
+This document combines the main results from our TikTok data project. Various reports will be discussed, including an basic data inspection, a summary analysis of the TikTok Video View data, and a regression analysis for Satiation.
+
+## Basic preliminaries before we start
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(RSQLite)
+views <- read.csv("data/video_view.csv")
+df <- read_csv("data/users.csv")
+```
+
+# Analyses
+
+## Basic Data Inspection
+In this section, we inspect the TikTok video view data. The goal is to get an initial understanding of the dataset, the videos it contains, and how viewers interact with these videos.
+
+We start by looking at the number of observations in the dataset to give us an idea of how many videos are included in the data.
+
+```{r}
+x <- nrow(views)
+print(x)
+```
+
+Next, we inspect the structure of the dataset and look at the first few observations. This helps us understand which variables are available and what type of data they contain.
+
+```{r}
+str(views)
+head(views)
+```
+
+We can also use summary() to obtain basic descriptive statistics for the variables in the dataset and check for missing values.
+
+```{r}
+summary(views)
+colSums(is.na(views))
+```
+
+### Inspection using SQL
+
+To complement the initial inspection in R, we also inspect the SQLite database using SQL. The database contains several tables related to users, videos, creators, and viewing behavior. First we connect to the database
+
+```{r}
+con <- dbConnect(
+  SQLite(),
+  dbname = "data/raw/tiktok_students.sqlite",
+  flags = SQLITE_RO
+)
+
+dbListTables(con)
+
+```
+
+Then we look for how many people are called Stella in the users database.
+```{r}
+name_stella <- dbGetQuery(con, "
+  SELECT COUNT(*) AS number_of_stellas
+  FROM users
+  WHERE user_name = 'Stella'
+")
+
+name_stella
+```
+
+
+
+
+## Summary Analysis Video View
+Furtermore, we calculate some overall summary statistics. These statistics give us an overview of the number of videos and creators, as well as average values for several video and viewing characteristics.
+
+```{r}
+overview <- views %>%
+  summarize(
+    videos = n(),
+    creators = n_distinct(creator_id),
+    avg_length = mean(video_length_sec),
+    avg_impressions = mean(impressions_n),
+    avg_watched = mean(watched_n),
+    avg_watch_rate = 
+    avg_watch_share = 
+    avg_watch_seconds = 
+  )
+print(overview)
+```
+
+We can also calculate the mean watch rate and average watch share separately.
+
+```{r}
+mean(views$watch_rate)
+mean(views$avg_watch_share)
+```
+
+
+
+To get another measure of viewer engagement, we calculate the percentage of impressions that resulted in a watched video. We store this value in a new variable called watched_pct.
+
+```{r}
+views$watched_pct <- views$watched_n / views$impressions_n * 100
+```
+
+Next, we identify the video with the highest number of impressions. This allows us to see which video received the most exposure in the dataset.
+
+```{r}
+topvideo <- views[views$impressions_n == max(views$impressions_n), ]
+print(topvideo)
+```
+
+We can also investigate how long the videos in the dataset are. The histogram below shows the distribution of video length in seconds and provides a visual overview of whether most videos are relatively short or whether there is substantial variation in video length.
+
+```{r}
+hist(views$video_length_sec)
+```
+
+Finally, we identify videos with a watch rate above 80%. These can be considered videos that achieved a relatively high level of viewer engagement according to this measure.
+
+```{r}
+goodvideos <- subset(views, watch_rate > 0.8)
+nrow(goodvideos)
+```
+
+Overall, these initial analyses provide an overview of the TikTok video data. We examined the structure and completeness of the dataset, calculated summary statistics, investigated video length, identified the video with the most impressions, and looked at videos with a high watch rate.
+
+## Regression Analysis Satiation
+
+In this section, we investigate whether users' content preferences are related to their satiation decay. Satiation decay can be understood as the rate at which a user's engagement with content decreases over time.
+
+We first examine the relationship between a user's preference for Comedy content and their satiation decay. We then extend the model by including preferences for several other genres and the user's overall video-watching activity.
+
+Before running the regression models, we perform some basic data cleaning. We remove observations containing missing values and remove duplicate rows. This gives us a clean dataset to use for the regression analysis.
+
+```{r}
+df_clean <- df %>%
+  drop_na() %>%                      
+  distinct() 
+```
+
+### Bivariate Regression
+
+We begin with a simple bivariate regression model. This model examines whether there is a linear relationship between a user's preference for Comedy content and their satiation decay.
+
+```{r}
+model_basic <- lm(satiation_decay ~ pref_Comedy, data = df_clean)
+
+cat("--- BASELINE MODEL SUMMARY ---\n")
+summary(model_basic)
+```
+
+The results of the baseline model indicate that there is no meaningful or statistically significant linear relationship between a user's Comedy preference and their rate of satiation decay.
+
+The coefficient estimate is approximately -1.813e-07, which is extremely close to zero. This suggests that changes in Comedy preference are associated with virtually no change in satiation decay in this model.
+
+The p-value is 0.999. Since this is well above the commonly used significance threshold of 0.05, the relationship is not statistically significant.
+
+## Extended Model
+
+The baseline model only considers Comedy preference. To investigate whether satiation decay could instead be related to preferences for different types of content, we extend the model by including several genre preferences.
+
+We also include base_videos_watched_mean as a behavioral control variable. This allows us to account for differences in users' overall video-watching activity.
+
+```{r}
+model_expanded <- lm(
+  satiation_decay ~ pref_Comedy + pref_Gaming + pref_BeautyFashion + pref_Travel + base_videos_watched_mean, 
+  data = df_clean
+)
+
+summary(model_expanded)
+```
+
+The expanded model does not provide statistically significant evidence that any of the included variables are associated with satiation decay.
+
+The adjusted R-squared is approximately -3.306e-05, indicating that the included predictors do not meaningfully explain variation in satiation decay in this dataset.
+
+The p-values for the individual predictors are all above 0.05, ranging from approximately 0.356 to 0.994. Therefore, none of the variables included in the expanded model show a statistically significant relationship with satiation decay.
+
+Based on these regression models, satiation decay does not appear to be strongly associated with the specific genre preferences or overall baseline video activity included in this analysis.
+
+## Output Visualization
+
+To complement the regression results, we create a scatter plot showing the relationship between Comedy preference and satiation decay. The regression line provides a visual representation of the relationship estimated by the baseline model.
+
+First, we create the output folder if it does not already exist. We then generate the scatter plot and add a linear regression line with its confidence interval. Finally, we save the plot as a PNG file in the fig_outputs folder.
+
+```{r}
+if (!dir.exists("../../fig_outputs")) {
+  dir.create("../../fig_outputs", recursive = TRUE)
+}
+
+p_regression <- ggplot(df_clean, aes(x = pref_Comedy, y = satiation_decay)) +
+  geom_point(alpha = 0.2, color = "#8A9A86") +
+  geom_smooth(method = "lm", color = "#3B4A3A", fill = "#B0C4DE", se = TRUE) +
+  labs(
+    title = "Satiation Decay vs. Comedy Preference",
+    subtitle = "Linear regression line shows no significant correlation",
+    x = "Preference Score for Comedy",
+    y = "Satiation Decay Rate"
+  ) +
+  theme_minimal()
+
+ggsave("../../fig_outputs/satiation_decay_regression.png", plot = p_regression, width = 7, height = 5)
+
+```
+
+To visualize the expanded model, we reshape the data so that the different genre preference variables can be compared in a single figure. We then create a separate panel for each content category. Each panel shows the relationship between the preference score and satiation decay, together with a linear regression line.
+
+```{r}
+df_long <- df_clean %>%
+  select(satiation_decay, pref_Comedy, pref_Gaming, pref_BeautyFashion, pref_Travel) %>%
+  pivot_longer(
+    cols = starts_with("pref_"),
+    names_to = "Category",
+    values_to = "Preference_Score"
+  ) %>%
+  mutate(Category = str_remove(Category, "pref_"))
+
+
+p_expanded <- ggplot(df_long, aes(x = Preference_Score, y = satiation_decay)) +
+  geom_point(alpha = 0.15, color = "#C8B6E2") +                      # Soft lilac points
+  geom_smooth(method = "lm", color = "#6A5ACD", fill = "#E6E6FA", se = TRUE) + # Slate/purple regression line & soft fill
+  facet_wrap(~ Category, scales = "free_x") +
+  labs(
+    title = "Satiation Decay vs. Content Genre Preferences",
+    subtitle = "Expanded Model Comparison across Categories",
+    x = "Preference Score",
+    y = "Satiation Decay Rate"
+  ) +
+  theme_minimal()
+
+ggsave("../../fig_outputs/satiation_decay_expanded_plot.png", plot = p_expanded, width = 8, height = 6)
+
+```
+
+The resulting figure allows us to visually compare the relationships across Comedy, Gaming, Beauty & Fashion, and Travel preferences.
+
+### Conclusion
+
+The regression analysis examined whether users' genre preferences and overall video-watching activity are associated with satiation decay.
+
+The baseline model found no statistically significant relationship between Comedy preference and satiation decay. The expanded model, which included several additional genre preferences and overall video activity, also did not identify statistically significant relationships.
+
+The visualizations provide a graphical representation of these results and show the relationships between satiation decay and the different preference variables.
+
+# Overall Conclusion
+
+The data inspection provided an overview of the TikTok datasets, including the number of observations, variables, missing values, and basic summary statistics. The SQL inspection also showed how specific information can be extracted from the database; for example, the `users` table contains 23 users whose `user_name` includes “Stella”.
+
+The regression analysis investigated whether users' preference for Comedy was related to their satiation decay rate. The baseline regression found no statistically significant relationship between `pref_Comedy` and `satiation_decay (p = 0.999)`. The expanded model, which also included preferences for Gaming, Beauty & Fashion, Travel, and the average number of videos watched, similarly found no statistically significant relationships. The adjusted R-squared was approximately zero, indicating that these variables explained virtually none of the variation in satiation decay in this dataset.
+
+These results suggest that, within this dataset and using these linear regression models, genre preferences and baseline viewing activity do not provide strong evidence for explaining differences in satiation decay. However, this does not prove that there is no relationship at all. The analysis only tests the specific variables and linear relationships included in the models. Other variables, non-linear relationships, measurement issues, or interactions between variables could potentially explain variation in satiation decay. Therefore, the results should be interpreted as a lack of evidence for a significant linear relationship in this particular analysis, rather than proof that no relationship exists.
