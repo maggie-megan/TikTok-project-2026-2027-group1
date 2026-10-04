@@ -133,6 +133,7 @@ documents/report.pdf: \
 # -------------------------
 
 clean:
-	del /Q data\*.csv
-	del /Q fig_outputs\*.png
-	del /Q *.pdf
+	-del /Q data\raw\*.csv
+	-del /Q data\output\*.csv
+	-del /Q fig_outputs\*.png
+	-del /Q *.pdf
