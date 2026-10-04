@@ -2,7 +2,7 @@
 library(tidyverse)
 
 # 1. Read dataset
-df <- read_csv("../../data/users.csv")
+df <- read_csv("../../../data/users.csv")
 
 # 2. Basic cleaning
 df_clean <- df %>%
