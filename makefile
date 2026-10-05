@@ -5,6 +5,12 @@ all: documents/report.pdf
 # Download data
 # -------------------------
 
+data/raw/video_view.csv: src/video_view_analysis/data_download.R
+	Rscript src/video_view_analysis/data_download.R
+
+data/raw/tiktok_students.sqlite: src/download_database.R
+	Rscript src/download_database.R
+	
 data/raw/sessions.csv: src/session_analysis/download_data.R
 	Rscript src/session_analysis/download_data.R
 
@@ -12,7 +18,7 @@ data/raw/impressions.csv: src/analysis_impressions/raw_data_impressions.R
 	Rscript src/analysis_impressions/raw_data_impressions.R
 
 data/raw/users.csv: src/tiktok_analysis/download_data.R
-	cd src/tiktok_analysis && Rscript download_data.R
+	Rscript src/tiktok_analysis/download_data.R
 
 data/raw/watch_events.csv: src/watch_rates_analysis/raw_data_script.R
 	cd src/watch_rates_analysis && Rscript raw_data_script.R
@@ -57,19 +63,19 @@ data/output/clean_impressions.csv: data/raw/impressions.csv src/analysis_impress
 # -------------------------
 
 fig_outputs/logins_distribution.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	cd src/tiktok_analysis && Rscript analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
 fig_outputs/content_preferences.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	cd src/tiktok_analysis && Rscript analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
 fig_outputs/logins_vs_videos.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	cd src/tiktok_analysis && Rscript analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
 fig_outputs/interaction_density.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	cd src/tiktok_analysis && Rscript analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
 fig_outputs/satiation_vs_videos.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	cd src/tiktok_analysis && Rscript analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
 
 # -------------------------
@@ -102,12 +108,12 @@ fig_outputs/satiation_decay_expanded_plot.png: \
 	src/Regression_analysis/regression_analysis.R
 	cd src/Regression_analysis && Rscript regression_analysis.R
 
-
 # -------------------------
 # Final report
 # -------------------------
 
 documents/report.pdf: \
+	documents\analyses.Rmd \
 	fig_outputs/session_duration.png \
 	fig_outputs/videos_viewed_vs_session_duration.png \
 	fig_outputs/sessions_by_login_hour.png \
@@ -126,8 +132,7 @@ documents/report.pdf: \
 	fig_outputs/best_creator_plot.png \
 	fig_outputs/satiation_decay_regression.png \
 	fig_outputs/satiation_decay_expanded_plot.png
-	Rscript -e "if (!requireNamespace('png', quietly=TRUE)) install.packages('png', repos='https://cloud.r-project.org'); imgs <- c('fig_outputs/session_duration.png', 'fig_outputs/videos_viewed_vs_session_duration.png', 'fig_outputs/sessions_by_login_hour.png', 'fig_outputs/impression_volume_hourly.png', 'fig_outputs/recommendation_method_total_score.png', 'fig_outputs/user_satiation.png', 'fig_outputs/top_creator_total_score.png', 'fig_outputs/logins_distribution.png', 'fig_outputs/content_preferences.png', 'fig_outputs/logins_vs_videos.png', 'fig_outputs/interaction_density.png', 'fig_outputs/satiation_vs_videos.png', 'fig_outputs/action_plot.png', 'fig_outputs/watch_seconds_plot.png', 'fig_outputs/watch_seconds_per_action_plot.png', 'fig_outputs/best_creator_plot.png', 'fig_outputs/satiation_decay_regression.png', 'fig_outputs/satiation_decay_expanded_plot.png'); pdf('documents/report.pdf'); for (f in imgs) { plot.new(); rasterImage(png::readPNG(f), 0, 0, 1, 1) }; dev.off()"
-
+	Rscript -e "rmarkdown::render('documents/analyses.Rmd', output_file='report.pdf', output_dir='documents', knit_root_dir=getwd())"
 # -------------------------
 # Clean
 # -------------------------

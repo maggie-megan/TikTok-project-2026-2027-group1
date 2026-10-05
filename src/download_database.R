@@ -4,6 +4,12 @@ destination_file <- "data/raw/tiktok_students.sqlite"
 # or whatever you want to name it
 
 # Download the file
-download.file(url, destfile = destination_file, mode = "wb")
+if (!file.exists(destination_file)) {
+  download.file(
+    url,
+    destfile = destination_file,
+    mode = "wb"
+  )
+}
 
 cat("File downloaded successfully to:", destination_file, "\n")

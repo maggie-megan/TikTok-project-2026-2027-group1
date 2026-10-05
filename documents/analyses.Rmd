@@ -1,14 +1,24 @@
 ---
-title: 'TikTok Analyses '
-authors: Group 1
+title: "TikTok Analyses"
+author: "Group 1"
 output:
-  pdf_document: default
-  html_document: default
+  pdf_document:
+    fig_caption: true
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  out.width = "85%"
+)
+```
 
 # Introduction
 
-This document combines the main results from our TikTok data project. Various reports will be discussed, including an basic data inspection, a summary analysis of the TikTok Video View data, and a regression analysis for Satiation.
+This document combines the main results from our TikTok data project. Various reports will be discussed, including an basic data inspection, a summary analysis of the TikTok Video View data, and the figures produced during the analysis of impressions, users, session and watch rates, as well as looking at our regression analysis for Satiation.
 
 ## Basic preliminaries before we start
 
@@ -16,8 +26,8 @@ This document combines the main results from our TikTok data project. Various re
 library(dplyr)
 library(tidyverse)
 library(RSQLite)
-views <- read.csv("data/video_view.csv")
-df <- read_csv("data/users.csv")
+views <- read.csv("data/raw/video_view.csv")
+df <- read_csv("data/raw/users.csv")
 ```
 
 # Analyses
@@ -72,9 +82,6 @@ name_stella <- dbGetQuery(con, "
 name_stella
 ```
 
-
-
-
 ## Summary Analysis Video View
 Furtermore, we calculate some overall summary statistics. These statistics give us an overview of the number of videos and creators, as well as average values for several video and viewing characteristics.
 
@@ -85,10 +92,7 @@ overview <- views %>%
     creators = n_distinct(creator_id),
     avg_length = mean(video_length_sec),
     avg_impressions = mean(impressions_n),
-    avg_watched = mean(watched_n),
-    avg_watch_rate = 
-    avg_watch_share = 
-    avg_watch_seconds = 
+    avg_watched = mean(watched_n)
   )
 print(overview)
 ```
@@ -99,8 +103,6 @@ We can also calculate the mean watch rate and average watch share separately.
 mean(views$watch_rate)
 mean(views$avg_watch_share)
 ```
-
-
 
 To get another measure of viewer engagement, we calculate the percentage of impressions that resulted in a watched video. We store this value in a new variable called watched_pct.
 
@@ -130,6 +132,145 @@ nrow(goodvideos)
 
 Overall, these initial analyses provide an overview of the TikTok video data. We examined the structure and completeness of the dataset, calculated summary statistics, investigated video length, identified the video with the most impressions, and looked at videos with a high watch rate.
 
+## Session Analysis
+Add some text
+
+```{r session-duration, fig.cap="Figure 1. Distribution of Session Duration"}
+knitr::include_graphics("fig_outputs/session_duration.png")
+```
+
+Add some text
+
+```{r videos-session-duration, fig.cap="Figure 2. Videos Viewed and Session Duration"}
+knitr::include_graphics("fig_outputs/videos_viewed_vs_session_duration.png")
+```
+
+Add some text
+
+```{r sessions-login-hour, fig.cap="Figure 3. Sessions by Login Hour"}
+knitr::include_graphics("fig_outputs/sessions_by_login_hour.png")
+```
+
+Add some text
+
+## Impressions Analysis
+
+## Impressions Analysis
+
+[ADD YOUR IMPRESSIONS ANALYSIS TEXT HERE.]
+
+```{r impression-volume, fig.cap="Figure 4. Impression Volume by Hour"}
+knitr::include_graphics("fig_outputs/impression_volume_hourly.png")
+```
+
+*This figure shows how impression volume varies across hours, providing insight into the timing of content exposure.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r recommendation-score, fig.cap="Figure 5. Total Score by Recommendation Method"}
+knitr::include_graphics("fig_outputs/recommendation_method_total_score.png")
+```
+
+*This figure compares total scores across recommendation methods, allowing differences in performance between recommendation approaches to be assessed.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r user-satiation, fig.cap="Figure 6. User Satiation"}
+knitr::include_graphics("fig_outputs/user_satiation.png")
+```
+
+*This figure visualizes user satiation, providing insight into how engagement changes as users consume content.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r top-creator, fig.cap="Figure 7. Total Score of Top Creators"}
+knitr::include_graphics("fig_outputs/top_creator_total_score.png")
+```
+
+*This figure compares the total scores of the highest-performing creators in the dataset.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+## User Analysis
+
+[ADD YOUR USER ANALYSIS TEXT HERE.]
+
+```{r login-distribution, fig.cap="Figure 8. Distribution of User Logins"}
+knitr::include_graphics("fig_outputs/logins_distribution.png")
+```
+
+*This figure shows the distribution of login activity across users.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r content-preferences, fig.cap="Figure 9. User Content Preferences"}
+knitr::include_graphics("fig_outputs/content_preferences.png")
+```
+
+*This figure summarizes users' preferences across different types of TikTok content.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r logins-videos, fig.cap="Figure 10. Logins and Videos Watched"}
+knitr::include_graphics("fig_outputs/logins_vs_videos.png")
+```
+
+*This figure compares login activity with the number of videos watched, providing insight into the relationship between platform use and content consumption.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r interaction-density, fig.cap="Figure 11. User Interaction Density"}
+knitr::include_graphics("fig_outputs/interaction_density.png")
+```
+
+*This figure visualizes the density of user interactions within the dataset.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r satiation-videos, fig.cap="Figure 12. Satiation and Videos Watched"}
+knitr::include_graphics("fig_outputs/satiation_vs_videos.png")
+```
+
+*This figure compares satiation with video-watching activity to examine whether engagement patterns differ according to the amount of content consumed.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+## Watch Rates Analysis
+
+[ADD YOUR WATCH RATES ANALYSIS TEXT HERE.]
+
+```{r action-plot, fig.cap="Figure 13. Distribution of User Actions"}
+knitr::include_graphics("fig_outputs/action_plot.png")
+```
+
+*This figure shows the distribution of actions recorded in the watch-events data.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r watch-seconds, fig.cap="Figure 14. Distribution of Watch Time"}
+knitr::include_graphics("fig_outputs/watch_seconds_plot.png")
+```
+
+*This figure shows the distribution of watch time, measured in seconds, across viewing events.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r watch-action, fig.cap="Figure 15. Watch Time by User Action"}
+knitr::include_graphics("fig_outputs/watch_seconds_per_action_plot.png")
+```
+
+*This figure compares watch time across different user actions, showing how viewing duration differs according to subsequent engagement.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
+```{r best-creator, fig.cap="Figure 16. Creator Performance by Watch Behavior"}
+knitr::include_graphics("fig_outputs/best_creator_plot.png")
+```
+
+*This figure highlights creator performance based on the watch-behavior measures used in the analysis.*
+
+[ADD YOUR INTERPRETATION HERE.]
+
 ## Regression Analysis Satiation
 
 In this section, we investigate whether users' content preferences are related to their satiation decay. Satiation decay can be understood as the rate at which a user's engagement with content decreases over time.
@@ -155,6 +296,10 @@ cat("--- BASELINE MODEL SUMMARY ---\n")
 summary(model_basic)
 ```
 
+```{r regression-figure, fig.cap="Figure 17. Satiation Decay and Comedy Preference"}
+knitr::include_graphics("fig_outputs/satiation_decay_regression.png")
+```
+
 The results of the baseline model indicate that there is no meaningful or statistically significant linear relationship between a user's Comedy preference and their rate of satiation decay.
 
 The coefficient estimate is approximately -1.813e-07, which is extremely close to zero. This suggests that changes in Comedy preference are associated with virtually no change in satiation decay in this model.
@@ -174,6 +319,10 @@ model_expanded <- lm(
 )
 
 summary(model_expanded)
+```
+
+```{r expanded-regression-figure, fig.cap="Figure 18. Satiation Decay and Content Genre Preferences"}
+knitr::include_graphics("fig_outputs/satiation_decay_expanded_plot.png")
 ```
 
 The expanded model does not provide statistically significant evidence that any of the included variables are associated with satiation decay.
