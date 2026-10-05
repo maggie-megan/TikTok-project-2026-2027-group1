@@ -1,8 +1,6 @@
-# Ignore all data files
-data/
-
 # Ignore all generated figures
 fig_outputs/
 
-# Ignore all PDF files
+# Ignore files
 *.pdf
+*.csv
