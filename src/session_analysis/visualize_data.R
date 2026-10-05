@@ -4,7 +4,7 @@ library(tidyverse)
 library(lubridate)
 
 # Basic cleaning of the data  
-sessions <- read_csv("data/sessions.csv")
+sessions <- read_csv("data/raw/sessions.csv")
 
 head(sessions)
 

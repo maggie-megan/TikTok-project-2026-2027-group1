@@ -2,7 +2,7 @@
 library(tidyverse)
 
 # 1. Read dataset
-df <- read_csv("../../../data/users.csv")
+df <- read_csv("../../data/raw/users.csv")
 
 # 2. Basic cleaning
 df_clean <- df %>%
@@ -40,11 +40,6 @@ summary(model_expanded)
 
 # 5. Output Visualization
 
-# Create target folder if it does not exist
-if (!dir.exists("Regression_analysis")) {
-  dir.create("Regression_analysis", recursive = TRUE)
-}
-
 # Generate scatter plot with baseline regression line
 
 p_regression <- ggplot(df_clean, aes(x = pref_Comedy, y = satiation_decay)) +
@@ -59,7 +54,7 @@ p_regression <- ggplot(df_clean, aes(x = pref_Comedy, y = satiation_decay)) +
   theme_minimal()
 
 # Save plot file
-ggsave("Regression_analysis/satiation_decay_regression.png", plot = p_regression, width = 7, height = 5)
+ggsave("../../fig_outputs/satiation_decay_regression.png", plot = p_regression, width = 7, height = 5)
 
 
 library(tidyr)
@@ -88,7 +83,7 @@ p_expanded <- ggplot(df_long, aes(x = Preference_Score, y = satiation_decay)) +
   ) +
   theme_minimal()
 
-ggsave("Regression_analysis/satiation_decay_expanded_plot.png", plot = p_expanded, width = 8, height = 6)
+ggsave("../../fig_outputs/satiation_decay_expanded_plot.png", plot = p_expanded, width = 8, height = 6)
 
 
 # End of the regression analysis

@@ -1,14 +1,28 @@
 ---
-title: 'TikTok Analyses '
-authors: Group 1
+title: "TikTok Analyses"
+author: "Group 1"
 output:
-  pdf_document: default
-  html_document: default
+  pdf_document:
+    fig_caption: true
+header-includes:
+  - \usepackage{float}
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  out.width = "55%",
+  fig.pos = "H"
+)
+```
+
 
 # Introduction
 
-This document combines the main results from our TikTok data project. Various reports will be discussed, including an basic data inspection, a summary analysis of the TikTok Video View data, and a regression analysis for Satiation.
+This document combines the main results from our TikTok data project. Various reports will be discussed, including an basic data inspection, a summary analysis of the TikTok Video View data, and the figures produced during the analysis of impressions, users, session and watch rates, as well as looking at our regression analysis for Satiation.
 
 ## Basic preliminaries before we start
 
@@ -16,9 +30,11 @@ This document combines the main results from our TikTok data project. Various re
 library(dplyr)
 library(tidyverse)
 library(RSQLite)
-views <- read.csv("data/video_view.csv")
-df <- read_csv("data/users.csv")
+views <- read.csv("../data/raw/video_view.csv")
+df <- read_csv("../data/raw/users.csv")
 ```
+
+\vspace{0.3cm}
 
 # Analyses
 
@@ -27,33 +43,47 @@ In this section, we inspect the TikTok video view data. The goal is to get an in
 
 We start by looking at the number of observations in the dataset to give us an idea of how many videos are included in the data.
 
+\vspace{0.3cm}
+
 ```{r}
 x <- nrow(views)
 print(x)
 ```
 
+\vspace{0.3cm}
+
 Next, we inspect the structure of the dataset and look at the first few observations. This helps us understand which variables are available and what type of data they contain.
 
-```{r}
+\vspace{0.3cm}
+
+```{r, eval=FALSE}
 str(views)
 head(views)
 ```
 
+\vspace{0.3cm}
+
 We can also use summary() to obtain basic descriptive statistics for the variables in the dataset and check for missing values.
 
-```{r}
+\vspace{0.3cm}
+
+```{r, eval=FALSE}
 summary(views)
 colSums(is.na(views))
 ```
+
+\vspace{0.3cm}
 
 ### Inspection using SQL
 
 To complement the initial inspection in R, we also inspect the SQLite database using SQL. The database contains several tables related to users, videos, creators, and viewing behavior. First we connect to the database
 
+\vspace{0.3cm}
+
 ```{r}
 con <- dbConnect(
   SQLite(),
-  dbname = "data/raw/tiktok_students.sqlite",
+  dbname = "../data/raw/tiktok_students.sqlite",
   flags = SQLITE_RO
 )
 
@@ -61,7 +91,12 @@ dbListTables(con)
 
 ```
 
+\vspace{0.3cm}
+
 Then we look for how many people are called Stella in the users database.
+
+\vspace{0.3cm}
+
 ```{r}
 name_stella <- dbGetQuery(con, "
   SELECT COUNT(*) AS number_of_stellas
@@ -72,11 +107,12 @@ name_stella <- dbGetQuery(con, "
 name_stella
 ```
 
-
-
+\vspace{0.3cm}
 
 ## Summary Analysis Video View
 Furtermore, we calculate some overall summary statistics. These statistics give us an overview of the number of videos and creators, as well as average values for several video and viewing characteristics.
+
+\vspace{0.3cm}
 
 ```{r}
 overview <- views %>%
@@ -85,50 +121,242 @@ overview <- views %>%
     creators = n_distinct(creator_id),
     avg_length = mean(video_length_sec),
     avg_impressions = mean(impressions_n),
-    avg_watched = mean(watched_n),
-    avg_watch_rate = 
-    avg_watch_share = 
-    avg_watch_seconds = 
+    avg_watched = mean(watched_n)
   )
 print(overview)
 ```
 
+\vspace{0.3cm}
+
 We can also calculate the mean watch rate and average watch share separately.
+
+\vspace{0.3cm}
 
 ```{r}
 mean(views$watch_rate)
 mean(views$avg_watch_share)
 ```
 
-
+\vspace{0.3cm}
 
 To get another measure of viewer engagement, we calculate the percentage of impressions that resulted in a watched video. We store this value in a new variable called watched_pct.
+
+\vspace{0.3cm}
 
 ```{r}
 views$watched_pct <- views$watched_n / views$impressions_n * 100
 ```
 
+\vspace{0.3cm}
+
 Next, we identify the video with the highest number of impressions. This allows us to see which video received the most exposure in the dataset.
+
+\vspace{0.3cm}
 
 ```{r}
 topvideo <- views[views$impressions_n == max(views$impressions_n), ]
 print(topvideo)
 ```
 
+\vspace{0.3cm}
+
 We can also investigate how long the videos in the dataset are. The histogram below shows the distribution of video length in seconds and provides a visual overview of whether most videos are relatively short or whether there is substantial variation in video length.
+
+\vspace{0.3cm}
 
 ```{r}
 hist(views$video_length_sec)
 ```
 
+\vspace{0.3cm}
+
 Finally, we identify videos with a watch rate above 80%. These can be considered videos that achieved a relatively high level of viewer engagement according to this measure.
+
+\vspace{0.3cm}
 
 ```{r}
 goodvideos <- subset(views, watch_rate > 0.8)
 nrow(goodvideos)
 ```
 
+\vspace{0.3cm}
+
 Overall, these initial analyses provide an overview of the TikTok video data. We examined the structure and completeness of the dataset, calculated summary statistics, investigated video length, identified the video with the most impressions, and looked at videos with a high watch rate.
+
+## Session Analysis
+The session analysis aims to examine how users interact with TikTok during individual sessions. This analysis looks at session duration, the number of videos viewed, and login times to better understand patterns in user activity.
+
+\vspace{0.3cm}
+
+```{r session-duration, fig.cap="Distribution of Session Duration"}
+knitr::include_graphics("../fig_outputs/session_duration.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows the distribution of session duration, providing insight into how long users typically remain active during a TikTok session.
+
+\vspace{0.3cm}
+
+```{r videos-session-duration, fig.cap="Videos Viewed and Session Duration"}
+knitr::include_graphics("../fig_outputs/videos_viewed_vs_session_duration.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares the number of videos viewed with session duration, showing the relationship between the amount of content consumed and the length of a session.
+
+\vspace{0.3cm}
+
+```{r sessions-login-hour, fig.cap="Sessions by Login Hour"}
+knitr::include_graphics("../fig_outputs/sessions_by_login_hour.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows the distribution of sessions across different login hours, providing insight into when users are most active on TikTok.
+
+## Impressions Analysis
+
+The impression analysis aims to look at different impression factors when looking at data from TikTok. This analysis looks at variables such as shown_at, feed_rank, source_bucket, score_satiation_penalty, and score_total.
+
+\vspace{0.3cm}
+
+```{r impression-volume, fig.cap="Impression Volume by Hour"}
+knitr::include_graphics("../fig_outputs/impression_volume_hourly.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows how impression volume varies across hours, providing insight into the timing of content exposure.
+
+\vspace{0.3cm}
+
+```{r recommendation-score, fig.cap="Total Score by Recommendation Method"}
+knitr::include_graphics("../fig_outputs/recommendation_method_total_score.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares total scores across recommendation methods, allowing differences in performance between recommendation approaches to be assessed.
+
+\vspace{0.3cm}
+
+```{r user-satiation, fig.cap="User Satiation"}
+knitr::include_graphics("../fig_outputs/user_satiation.png")
+```
+
+\vspace{0.3cm}
+
+This figure visualizes user satiation, providing insight into how engagement changes as users consume content.
+
+\vspace{0.3cm}
+
+```{r top-creator, fig.cap="Total Score of Top Creators"}
+knitr::include_graphics("../fig_outputs/top_creator_total_score.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares the total scores of the highest-performing creators in the dataset.
+
+## User Analysis
+
+User analysis inspects the user TikTok behavioral data. It looks at topics such as saitiation, content preference, 
+
+\vspace{0.3cm}
+
+```{r login-distribution, fig.cap="Distribution of User Logins"}
+knitr::include_graphics("../fig_outputs/logins_distribution.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows the distribution of login activity across users.
+
+\vspace{0.3cm}
+
+```{r content-preferences, fig.cap="User Content Preferences"}
+knitr::include_graphics("../fig_outputs/content_preferences.png")
+```
+
+\vspace{0.3cm}
+
+This figure summarizes users' preferences across different types of TikTok content.
+
+\vspace{0.3cm}
+
+```{r logins-videos, fig.cap="Logins and Videos Watched"}
+knitr::include_graphics("../fig_outputs/logins_vs_videos.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares login activity with the number of videos watched, providing insight into the relationship between platform use and content consumption.
+
+\vspace{0.3cm}
+
+```{r interaction-density, fig.cap="User Interaction Density"}
+knitr::include_graphics("../fig_outputs/interaction_density.png")
+```
+
+\vspace{0.3cm}
+
+This figure visualizes the density of user interactions within the dataset.
+
+\vspace{0.3cm}
+
+```{r satiation-videos, fig.cap="Satiation and Videos Watched"}
+knitr::include_graphics("../fig_outputs/satiation_vs_videos.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares satiation with video-watching activity to examine whether engagement patterns differ according to the amount of content consumed.
+
+## Watch Rates Analysis
+
+Watch rates analysis looks at data about TikTok Watch Rates. Looking at variables such as "watch_seconds", "action", and  "creator_id". 
+
+\vspace{0.3cm}
+
+```{r action-plot, fig.cap="Distribution of User Actions"}
+knitr::include_graphics("../fig_outputs/action_plot.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows the distribution of actions recorded in the watch-events data.
+
+\vspace{0.3cm}
+
+```{r watch-seconds, fig.cap="Distribution of Watch Time"}
+knitr::include_graphics("../fig_outputs/watch_seconds_plot.png")
+```
+
+\vspace{0.3cm}
+
+This figure shows the distribution of watch time, measured in seconds, across viewing events.
+
+\vspace{0.3cm}
+
+```{r watch-action, fig.cap="Watch Time by User Action"}
+knitr::include_graphics("../fig_outputs/watch_seconds_per_action_plot.png")
+```
+
+\vspace{0.3cm}
+
+This figure compares watch time across different user actions, showing how viewing duration differs according to subsequent engagement.
+
+\vspace{0.3cm}
+
+```{r best-creator, fig.cap="Creator Performance by Watch Behavior"}
+knitr::include_graphics("../fig_outputs/best_creator_plot.png")
+```
+
+\vspace{0.3cm}
+
+This figure highlights creator performance based on the watch-behavior measures used in the analysis.
 
 ## Regression Analysis Satiation
 
@@ -138,15 +366,21 @@ We first examine the relationship between a user's preference for Comedy content
 
 Before running the regression models, we perform some basic data cleaning. We remove observations containing missing values and remove duplicate rows. This gives us a clean dataset to use for the regression analysis.
 
+\vspace{0.3cm}
+
 ```{r}
 df_clean <- df %>%
   drop_na() %>%                      
   distinct() 
 ```
 
+\vspace{0.3cm}
+
 ### Bivariate Regression
 
 We begin with a simple bivariate regression model. This model examines whether there is a linear relationship between a user's preference for Comedy content and their satiation decay.
+
+\vspace{0.3cm}
 
 ```{r}
 model_basic <- lm(satiation_decay ~ pref_Comedy, data = df_clean)
@@ -154,6 +388,14 @@ model_basic <- lm(satiation_decay ~ pref_Comedy, data = df_clean)
 cat("--- BASELINE MODEL SUMMARY ---\n")
 summary(model_basic)
 ```
+
+\vspace{0.3cm}
+
+```{r regression-figure, fig.cap="Satiation Decay and Comedy Preference"}
+knitr::include_graphics("../fig_outputs/satiation_decay_regression.png")
+```
+
+\vspace{0.3cm}
 
 The results of the baseline model indicate that there is no meaningful or statistically significant linear relationship between a user's Comedy preference and their rate of satiation decay.
 
@@ -167,6 +409,8 @@ The baseline model only considers Comedy preference. To investigate whether sati
 
 We also include base_videos_watched_mean as a behavioral control variable. This allows us to account for differences in users' overall video-watching activity.
 
+\vspace{0.3cm}
+
 ```{r}
 model_expanded <- lm(
   satiation_decay ~ pref_Comedy + pref_Gaming + pref_BeautyFashion + pref_Travel + base_videos_watched_mean, 
@@ -175,6 +419,8 @@ model_expanded <- lm(
 
 summary(model_expanded)
 ```
+
+\vspace{0.3cm}
 
 The expanded model does not provide statistically significant evidence that any of the included variables are associated with satiation decay.
 
@@ -189,6 +435,8 @@ Based on these regression models, satiation decay does not appear to be strongly
 To complement the regression results, we create a scatter plot showing the relationship between Comedy preference and satiation decay. The regression line provides a visual representation of the relationship estimated by the baseline model.
 
 First, we create the output folder if it does not already exist. We then generate the scatter plot and add a linear regression line with its confidence interval. Finally, we save the plot as a PNG file in the fig_outputs folder.
+
+\vspace{0.3cm}
 
 ```{r}
 if (!dir.exists("../../fig_outputs")) {
@@ -210,7 +458,11 @@ ggsave("../../fig_outputs/satiation_decay_regression.png", plot = p_regression, 
 
 ```
 
+\vspace{0.3cm}
+
 To visualize the expanded model, we reshape the data so that the different genre preference variables can be compared in a single figure. We then create a separate panel for each content category. Each panel shows the relationship between the preference score and satiation decay, together with a linear regression line.
+
+\vspace{0.3cm}
 
 ```{r}
 df_long <- df_clean %>%
@@ -238,6 +490,14 @@ p_expanded <- ggplot(df_long, aes(x = Preference_Score, y = satiation_decay)) +
 ggsave("../../fig_outputs/satiation_decay_expanded_plot.png", plot = p_expanded, width = 8, height = 6)
 
 ```
+
+\vspace{0.3cm}
+
+```{r expanded-regression-figure, fig.cap="Satiation Decay and Content Genre Preferences"}
+knitr::include_graphics("../fig_outputs/satiation_decay_expanded_plot.png")
+```
+
+\vspace{0.3cm}
 
 The resulting figure allows us to visually compare the relationships across Comedy, Gaming, Beauty & Fashion, and Travel preferences.
 
