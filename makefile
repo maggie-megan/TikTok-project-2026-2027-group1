@@ -1,106 +1,178 @@
+# ============================================================
+# TikTok Project - Group 1
+# ============================================================
+
+.PHONY: all clean
+
 all: documents/report.pdf
 
 
-# -------------------------
-# Download data
-# -------------------------
+# ============================================================
+# Download raw data
+# ============================================================
 
+# Video-view data
 data/raw/video_view.csv: src/video_view_analysis/data_download.R
 	Rscript src/video_view_analysis/data_download.R
 
+
+# SQLite database
 data/raw/tiktok_students.sqlite: src/download_database.R
 	Rscript src/download_database.R
-	
+
+
+# Session data
 data/raw/sessions.csv: src/session_analysis/download_data.R
 	Rscript src/session_analysis/download_data.R
 
+
+# Impressions data
 data/raw/impressions.csv: src/analysis_impressions/raw_data_impressions.R
 	Rscript src/analysis_impressions/raw_data_impressions.R
 
+
+# User data
 data/raw/users.csv: src/tiktok_analysis/download_data.R
 	Rscript src/tiktok_analysis/download_data.R
 
+
+# Watch-event data
 data/raw/watch_events.csv: src/watch_rates_analysis/raw_data_script.R
 	cd src/watch_rates_analysis && Rscript raw_data_script.R
 
 
-# -------------------------
+
+# ============================================================
 # Session analysis
-# -------------------------
+# ============================================================
 
-fig_outputs/session_duration.png: data/raw/sessions.csv src/session_analysis/visualize_data.R
-	Rscript src/session_analysis/visualize_data.R
-
-fig_outputs/videos_viewed_vs_session_duration.png: data/raw/sessions.csv src/session_analysis/visualize_data.R
-	Rscript src/session_analysis/visualize_data.R
-
-fig_outputs/sessions_by_login_hour.png: data/raw/sessions.csv src/session_analysis/visualize_data.R
+fig_outputs/session_duration.png: \
+	data/raw/sessions.csv \
+	src/session_analysis/visualize_data.R
 	Rscript src/session_analysis/visualize_data.R
 
 
-# -------------------------
+fig_outputs/videos_viewed_vs_session_duration.png: \
+	data/raw/sessions.csv \
+	src/session_analysis/visualize_data.R
+	Rscript src/session_analysis/visualize_data.R
+
+
+fig_outputs/sessions_by_login_hour.png: \
+	data/raw/sessions.csv \
+	src/session_analysis/visualize_data.R
+	Rscript src/session_analysis/visualize_data.R
+
+
+
+# ============================================================
 # Impressions analysis
-# -------------------------
+# ============================================================
 
-fig_outputs/impression_volume_hourly.png: data/raw/impressions.csv src/analysis_impressions/impressions_analysis.R
-	Rscript src/analysis_impressions/impressions_analysis.R
-
-fig_outputs/recommendation_method_total_score.png: data/raw/impressions.csv src/analysis_impressions/impressions_analysis.R
-	Rscript src/analysis_impressions/impressions_analysis.R
-
-fig_outputs/user_satiation.png: data/raw/impressions.csv src/analysis_impressions/impressions_analysis.R
-	Rscript src/analysis_impressions/impressions_analysis.R
-
-fig_outputs/top_creator_total_score.png: data/raw/impressions.csv src/analysis_impressions/impressions_analysis.R
-	Rscript src/analysis_impressions/impressions_analysis.R
-
-data/output/clean_impressions.csv: data/raw/impressions.csv src/analysis_impressions/impressions_analysis.R
+fig_outputs/impression_volume_hourly.png: \
+	data/raw/impressions.csv \
+	src/analysis_impressions/impressions_analysis.R
 	Rscript src/analysis_impressions/impressions_analysis.R
 
 
-# -------------------------
+fig_outputs/recommendation_method_total_score.png: \
+	data/raw/impressions.csv \
+	src/analysis_impressions/impressions_analysis.R
+	Rscript src/analysis_impressions/impressions_analysis.R
+
+
+fig_outputs/user_satiation.png: \
+	data/raw/impressions.csv \
+	src/analysis_impressions/impressions_analysis.R
+	Rscript src/analysis_impressions/impressions_analysis.R
+
+
+fig_outputs/top_creator_total_score.png: \
+	data/raw/impressions.csv \
+	src/analysis_impressions/impressions_analysis.R
+	Rscript src/analysis_impressions/impressions_analysis.R
+
+
+data/output/clean_impressions.csv: \
+	data/raw/impressions.csv \
+	src/analysis_impressions/impressions_analysis.R
+	Rscript src/analysis_impressions/impressions_analysis.R
+
+
+
+# ============================================================
 # User analysis
-# -------------------------
+# ============================================================
 
-fig_outputs/logins_distribution.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	Rscript src/tiktok_analysis/analyze_data.R
-
-fig_outputs/content_preferences.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	Rscript src/tiktok_analysis/analyze_data.R
-
-fig_outputs/logins_vs_videos.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	Rscript src/tiktok_analysis/analyze_data.R
-
-fig_outputs/interaction_density.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
-	Rscript src/tiktok_analysis/analyze_data.R
-
-fig_outputs/satiation_vs_videos.png: data/raw/users.csv src/tiktok_analysis/analyze_data.R
+fig_outputs/logins_distribution.png: \
+	data/raw/users.csv \
+	src/tiktok_analysis/analyze_data.R
 	Rscript src/tiktok_analysis/analyze_data.R
 
 
-# -------------------------
-# Watch rates analysis
-# -------------------------
+fig_outputs/content_preferences.png: \
+	data/raw/users.csv \
+	src/tiktok_analysis/analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
 
-fig_outputs/action_plot.png: data/raw/watch_events.csv src/watch_rates_analysis/watch_rates_analysis_script.R
+
+fig_outputs/logins_vs_videos.png: \
+	data/raw/users.csv \
+	src/tiktok_analysis/analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
+
+
+fig_outputs/interaction_density.png: \
+	data/raw/users.csv \
+	src/tiktok_analysis/analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
+
+
+fig_outputs/satiation_vs_videos.png: \
+	data/raw/users.csv \
+	src/tiktok_analysis/analyze_data.R
+	Rscript src/tiktok_analysis/analyze_data.R
+
+
+
+# ============================================================
+# Watch-rates analysis
+# ============================================================
+
+fig_outputs/action_plot.png: \
+	data/raw/watch_events.csv \
+	src/watch_rates_analysis/watch_rates_analysis_script.R
 	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
 
-fig_outputs/watch_seconds_plot.png: data/raw/watch_events.csv src/watch_rates_analysis/watch_rates_analysis_script.R
-	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
 
-fig_outputs/watch_seconds_per_action_plot.png: data/raw/watch_events.csv src/watch_rates_analysis/watch_rates_analysis_script.R
-	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
-
-fig_outputs/best_creator_plot.png: data/raw/watch_events.csv src/watch_rates_analysis/watch_rates_analysis_script.R
-	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
-
-data/output/clean_watch_events.csv: data/raw/watch_events.csv src/watch_rates_analysis/watch_rates_analysis_script.R
+fig_outputs/watch_seconds_plot.png: \
+	data/raw/watch_events.csv \
+	src/watch_rates_analysis/watch_rates_analysis_script.R
 	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
 
 
-# -------------------------
+fig_outputs/watch_seconds_per_action_plot.png: \
+	data/raw/watch_events.csv \
+	src/watch_rates_analysis/watch_rates_analysis_script.R
+	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
+
+
+fig_outputs/best_creator_plot.png: \
+	data/raw/watch_events.csv \
+	src/watch_rates_analysis/watch_rates_analysis_script.R
+	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
+
+
+data/output/clean_watch_events.csv: \
+	data/raw/watch_events.csv \
+	src/watch_rates_analysis/watch_rates_analysis_script.R
+	cd src/watch_rates_analysis && Rscript watch_rates_analysis_script.R
+
+
+
+# ============================================================
 # Regression analysis
-# -------------------------
+# ============================================================
 
 fig_outputs/satiation_decay_regression.png \
 fig_outputs/satiation_decay_expanded_plot.png: \
@@ -108,12 +180,20 @@ fig_outputs/satiation_decay_expanded_plot.png: \
 	src/Regression_analysis/regression_analysis.R
 	cd src/Regression_analysis && Rscript regression_analysis.R
 
-# -------------------------
+
+
+# ============================================================
 # Final report
-# -------------------------
+# ============================================================
 
 documents/report.pdf: \
-	documents\analyses.Rmd \
+	documents/analyses.Rmd \
+	data/raw/video_view.csv \
+	data/raw/tiktok_students.sqlite \
+	data/raw/sessions.csv \
+	data/raw/impressions.csv \
+	data/raw/users.csv \
+	data/raw/watch_events.csv \
 	fig_outputs/session_duration.png \
 	fig_outputs/videos_viewed_vs_session_duration.png \
 	fig_outputs/sessions_by_login_hour.png \
@@ -132,13 +212,18 @@ documents/report.pdf: \
 	fig_outputs/best_creator_plot.png \
 	fig_outputs/satiation_decay_regression.png \
 	fig_outputs/satiation_decay_expanded_plot.png
-	Rscript -e "rmarkdown::render('documents/analyses.Rmd', output_file='report.pdf', output_dir='documents', knit_root_dir=getwd())"
-# -------------------------
-# Clean
-# -------------------------
+	Rscript -e "rmarkdown::render('documents/analyses.Rmd', output_format='pdf_document', output_file='report.pdf', output_dir='documents')"
+
+
+
+# ============================================================
+# Clean generated files
+# ============================================================
 
 clean:
-	-del /Q data\raw\*.csv
-	-del /Q data\output\*.csv
-	-del /Q fig_outputs\*.png
-	-del /Q *.pdf
+	-del /Q data\raw\*.csv 2>NUL
+	-del /Q data\raw\*.sqlite 2>NUL
+	-del /Q data\output\*.csv 2>NUL
+	-del /Q fig_outputs\*.png 2>NUL
+	-del /Q documents\report.pdf 2>NUL
+	-del /Q documents\report.log 2>NUL

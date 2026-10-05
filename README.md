@@ -16,30 +16,50 @@
     - Created session_analysis and edited tiktok_analysis
  
 ## The goal of the project
-Clean and analyze data, learn how to collaborate in data analytics and github.
+The aim of this project is to clean, analyse and visualise data from TikTok users. The project consists of four main analyses focusing on TikTok impressions, watch rates, users and sessions, followed by a regression analysis of user satiation. The project uses CSV data but also displays how an SQLite database could be used as data sources. Additionally, the project aimed to develop skills in collaborative data analytics, GitHub and reproducible research.
 
 ## Environment & dependencies 
 ### Folder structure
-In the Data folder, we have two subfolders, one for the raw data and one for the output. 
-In the Documents folder, you can find our AI usage, our Quatro report and our R history. 
-Then, in the fig_outputs folder, you can find our figures from our data, in scripts you can find our R scripts and in src, you can find our seperate project folders.
+The relevant files and folder are organised as follows:
+TikTok-project-2026-2027-group1/
+├── data/
+│   └── output/
+│   └── raw/
+├── documents/
+├── fig_outputs/
+├── src/
+│   └── analysis_impressions/
+│   └── regression_analysis/
+│   └── session_analysis/
+│   └── tiktok_analysis/
+│   └── video_view_analysis/
+│   └── watch_rates_analysis/
+│   └── download_database.R
+├── .gitignore
+├── README.md 
+├── makefile
 
 ### Dependencies
-To reproduce this analysis, you will need: 
-- **R** (version 4.6.1 recommended) to run the R scripts
-- **R packages:**  
+To reproduce this analysis, you will need:
+
+- **R** (version 4.6.1 recommended)
+- **R packages:**
   - `tidyverse`
-    - Within tidyverse packages: `ggplot2`, `lubridate`, `dplyr`
+  - `ggplot2`
+  - `lubridate`
+  - `dplyr`
   - `here`
-- **GNU Make:** to run the Makefile (optional; you can also run the R script directly)
-- **Data:** `data/raw/impressions.csv`(this will can be downloaded by running the script "raw_data_impressions.R")
+  - `DBI`
+  - `RSQLite`
+  - `rmarkdown`
+  - `knitr`
+- **GNU Make** to run the automated analysis pipeline.
+- A LaTeX installation (e.g. TinyTeX) to generate the final PDF report.
 
 ## Reproduction of the analysis 
-Please run the code in the following order:
-- download data file script in data/raw
-- run Quarto file "tiktok_project_report"
-- To run the full analysis, navigate to the root repository and run *make* in the terminal.
-    - If you would like to check seperate analyses navigate to those folders and either run the R codes seperatley or run *make* in the terminal
+To reproduce the complete analysis, navigate to the project root in the terminal and run *make*. The Makefile automatically downloads the required raw datasets and SQLite database, runs the analysis scripts, generates the cleaned datasets and figures, and renders the final report. The resulting PDF is saved as documents/report.pdf.
+
+**Optional**: You can run all the individual Rscripts within src/. This will allow you to look at individual codes and produce figures for certain analysis. 
 
 ## Troubleshooting
 - If you get errors about missing folders or data, confirm you are in the correct working directory and that your project structure matches the diagram above.
